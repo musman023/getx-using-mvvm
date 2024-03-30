@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getxapp/login_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,47 +10,54 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  LoginController controller = Get.put(LoginController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "GetX State Management",
-          style: TextStyle(color: Colors.white),
+        appBar: AppBar(
+          title: const Text(
+            "GetX State Management",
+            style: TextStyle(color: Colors.white),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.indigo.shade400,
         ),
-        centerTitle: true,
-        backgroundColor: Colors.indigo.shade400,
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ListTile(
-            title: Text('message'.tr),
-            subtitle: Text('name'.tr),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Row(
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              OutlinedButton(
-                  onPressed: () {
-                    Get.updateLocale(const Locale('en', 'US'));
-                  },
-                  child: const Text("English")),
-              const SizedBox(
-                width: 20,
+              TextFormField(
+                controller: controller.emailController.value,
+                decoration: const InputDecoration(
+                    hintText: 'Email', labelText: 'Email'),
               ),
-              OutlinedButton(
-                  onPressed: () {
-                    Get.updateLocale(const Locale('ur', 'PK'));
+              TextFormField(
+                controller: controller.passwordController.value,
+                decoration: const InputDecoration(
+                    hintText: 'Password', labelText: 'Password'),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Obx(() {
+                return InkWell(
+                  onTap: () {
+                    controller.loginApi();
                   },
-                  child: const Text("Urdu"))
+                  child: controller.loading.value
+                      ? const CircularProgressIndicator()
+                      : Container(
+                          height: 40,
+                          color: Colors.grey,
+                          child: const Center(child: Text("Login")),
+                        ),
+                );
+              })
             ],
-          )
-        ],
-      ),
-    );
+          ),
+        ));
   }
 }
